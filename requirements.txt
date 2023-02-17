@@ -19,6 +19,7 @@ django-timezone-field==5.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 flower==1.2.0
+gunicorn==20.1.0
 humanize==4.6.0
 kombu==5.2.4
 Markdown==3.4.1
@@ -28,7 +29,7 @@ pathspec==0.11.0
 platformdirs==3.0.0
 prometheus-client==0.16.0
 prompt-toolkit==3.0.36
-psycopg-binary==3.1.8
+psycopg2-binary==2.9.5
 pycparser==2.21
 PyJWT==2.6.0
 python-crontab==2.7.1

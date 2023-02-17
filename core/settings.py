@@ -4,9 +4,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-^t_8bb2tjj7$*hx@dx-q2h8d)w!2zia*_x#9j880o20@zgqjun"
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "false").lower() in ["1", "true", "yes"]
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(" ")
 CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
@@ -62,10 +62,10 @@ REDIS_URL = os.environ.get("REDIS", "redis://localhost:6379")
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "invest",
-        "USER": "investdjango",
-        "PASSWORD": "5NCXKht2H7D6VW96HSHqM0Ytv2AaaS",
-        "HOST": "192.168.1.243",
+        "NAME": os.environ.get("POSTGRES_DB"),
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
     }
 }
 

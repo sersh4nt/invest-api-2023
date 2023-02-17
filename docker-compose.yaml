@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: django-invest-api
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/app
+      - /var/www/invest-api/static:/usr/src/app/static
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=0
+      - DJANGO_ALLOWED_HOSTS=invest-api.sersh4nt.space localhost 127.0.0.1
+      - REDIS=redis://redis:6379
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    restart: always
+
+  db:
+    build: .
+    container_name: invest-db
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - /.env
+    ports:
+      - '5432:5432'
+
+  # celery:
+  #   build: .
+  #   container_name: celery
+  #   restart: always
+  #   command: celery -A core worker -l info --concurrency=6
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     - REDIS=redis://redis:6379
+  #   depends_on:
+  #     - redis
+  #   restart: always
+
+  # celery_beat:
+  #   build: .
+  #   container_name: celery-beat
+  #   restart: always
+  #   command: celery -A core beat -l info
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     - REDIS=redis://redis:6379
+  #   depends_on:
+  #     - redis
+  #   restart: always
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always

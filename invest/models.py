@@ -17,7 +17,7 @@ class Account(models.Model):
 class Subaccount(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     broker_id = models.BigIntegerField()
-    type = models.IntegerChoices()
+    type = models.CharField(max_length=100)
     name = models.CharField(max_length=1000, blank=True)
     description = models.TextField(blank=True)
     is_enabled = models.BooleanField(default=False)
@@ -98,7 +98,9 @@ class Future(Instrument):
     last_trade_date = models.DateTimeField()
     futures_type = models.CharField(max_length=100)
     asset_type = models.CharField(max_length=100)
-    basic_asset = models.ForeignKey(Instrument, on_delete=models.SET_NULL, null=True)
+    basic_asset = models.ForeignKey(
+        Instrument, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
     basic_asset_size = models.DecimalField(max_digits=19, decimal_places=9)
     expiration_date = models.DateTimeField()
 
@@ -115,7 +117,9 @@ class Option(Instrument):
         Currency, on_delete=models.SET_NULL, null=True
     )
     asset_type = models.CharField(max_length=100)
-    basic_asset = models.ForeignKey(Instrument, on_delete=models.SET_NULL, null=True)
+    basic_asset = models.ForeignKey(
+        Instrument, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
     basic_asset_size = models.DecimalField(max_digits=19, decimal_places=9)
     strike_price = models.DecimalField(max_digits=19, decimal_places=9)
 
@@ -155,9 +159,7 @@ class PortfolioPosition(models.Model):
 
 
 class InstrumentIndex(models.Model):
-    instrument = models.OneToOneField(
-        Instrument, on_delete=models.SET_NULL, primary_key=True, null=True
-    )
+    instrument = models.OneToOneField(Instrument, on_delete=models.SET_NULL, null=True)
     is_enabled = models.BooleanField(default=True)
     volatility = models.FloatField()
     volume = models.FloatField()
@@ -178,7 +180,7 @@ class Candle(models.Model):
     high = models.FloatField()
     low = models.FloatField()
     volume = models.IntegerField()
-    interval = models.CharField()
+    interval = models.CharField(max_length=10)
 
     class Meta:
         db_table = "candles"
